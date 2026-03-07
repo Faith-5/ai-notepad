@@ -10,7 +10,7 @@ This is a personal project to develop full-stack development skills, improve bac
 ## Project Structure
 
 - **`frontend/`** - React + TypeScript application with Vite
-- **`backend/`** - Python API (coming soon)
+- **`backend/`** - FastAPI (coming soon)
 
 ## Getting Started
 
