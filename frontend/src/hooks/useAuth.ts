@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@/types";
-
-// Dummy user for demo
-const DUMMY_USER: User = { id: "1", name: "Alex Johnson", email: "alex@example.com" };
+import { api } from "@/lib/api";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -12,20 +10,26 @@ export function useAuth() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setUser(DUMMY_USER);
+      // Verify token by fetching user
+      api.getMe()
+        .then(setUser)
+        .catch(() => {
+          localStorage.removeItem("token");
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      // Placeholder: replace with api.login(email, password)
-      await new Promise((r) => setTimeout(r, 800));
-      if (!email || !password) throw new Error("Email and password required");
-      localStorage.setItem("token", "demo-token");
-      setUser(DUMMY_USER);
+      const res = await api.login(email, password);
+      localStorage.setItem("token", res.access_token);
+      const userData = await api.getMe();
+      setUser(userData);
     } catch (e: any) {
       setError(e.message);
       throw e;
@@ -38,10 +42,10 @@ export function useAuth() {
     setLoading(true);
     setError(null);
     try {
-      await new Promise((r) => setTimeout(r, 800));
-      if (!name || !email || !password) throw new Error("All fields required");
-      localStorage.setItem("token", "demo-token");
-      setUser({ ...DUMMY_USER, name, email });
+      const res = await api.signup(name, email, password);
+      localStorage.setItem("token", res.access_token);
+      const userData = await api.getMe();
+      setUser(userData);
     } catch (e: any) {
       setError(e.message);
       throw e;

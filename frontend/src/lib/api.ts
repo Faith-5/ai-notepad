@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
@@ -18,16 +18,19 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   login: (email: string, password: string) =>
-    request<{ token: string; user: { id: string; name: string; email: string } }>("/auth/login", {
+    request<{ access_token: string; token_type: string }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
 
   signup: (name: string, email: string, password: string) =>
-    request<{ token: string; user: { id: string; name: string; email: string } }>("/auth/signup", {
+    request<{ access_token: string; token_type: string }>("/auth/signup", {
       method: "POST",
       body: JSON.stringify({ name, email, password }),
     }),
+
+  getMe: () =>
+    request<{ id: string; name: string; email: string }>("/auth/me"),
 
   getNotes: () =>
     request<{ id: string; title: string; content: string; created_at: string; updated_at: string }[]>("/notes"),
