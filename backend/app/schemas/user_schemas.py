@@ -24,7 +24,7 @@ class UserLogin(BaseModel):
     password: str = Field(..., min_length=1, max_length=100, description="User's password")
 
 class UserResponse(BaseModel):
-    id: int
+    id: str
     name: str
     email: EmailStr
 

@@ -34,6 +34,6 @@ def login_user(db: Session, user: UserLogin) -> Token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
     # Create JWT token
-    access_token = create_access_token(data={"user_id": db_user.id})
+    access_token = create_access_token(data={"user_id": str(db_user.id)})
     
     return Token(access_token=access_token, token_type="bearer")
