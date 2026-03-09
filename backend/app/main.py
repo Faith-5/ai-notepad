@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import engine
-from app.routes import auth_route
+from app.routes import auth_route, notes_route
 from app.db import models
 
 # Initialize FastAPI app
@@ -23,6 +23,7 @@ app.add_middleware(
 )
 
 app.router.include_router(auth_route.router)
+app.router.include_router(notes_route.router)
 
 @app.get('/')
 def root():
